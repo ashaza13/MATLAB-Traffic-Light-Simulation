@@ -283,7 +283,6 @@ while advance(scenario) && ishghandle(BEP.Parent)
                       end
  
                       if round(desiredSpeed) ~= round(speedEgoCar)
-                          disp("Distance to Light: " + distance);
                           fprintf("Previous Velocity: [%d %d %d]\n", egoCar.Velocity);
                           % Define positins array and current position
                             current_position = [egoCar.Position(1) egoCar.Position(2)];
@@ -297,6 +296,7 @@ while advance(scenario) && ishghandle(BEP.Parent)
                             
                             % Concatenate current position at beginning of subset_positions
                             updated_positions = [current_position; subset_positions];
+                            fprintf("Updated Positions: [%d %d]\n", updated_positions);
 
                           track_speed_change = true;
                           newVelocity = desiredSpeed * [cos(theta), sin(theta), 0];
@@ -305,7 +305,8 @@ while advance(scenario) && ishghandle(BEP.Parent)
 %                           new_points = trajectoryGeneratorFrenet(points);
                           trajectory(egoCar, updated_positions, desiredSpeed);
                           pause(0.01);
-                          fprintf("New Velocity: [%d %d %d]\n", egoCar.Velocity);
+                          disp("New speed: " + egoCar.Velocity);
+                          fprintf("New Speed: [\n", current_position);
 
                       end
                       
