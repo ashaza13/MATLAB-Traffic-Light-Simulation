@@ -31,7 +31,7 @@ scenario.SampleTime = 0.01;
 % Add a stretch of 500 meters of typical highway road with two lanes. The 
 % road is defined using a set of points, where each point defines the center of 
 % the road in 3-D space. Add a Jersey barrier to the right edge of the road.
-roadCenters = [0 0; 50 0; 100 0; 250 20; 500 20; 600 0];
+roadCenters = [0 0; 50 0; 100 0; 250 20; 500 40; 600 45];
 mainRoad = road(scenario, roadCenters, 'lanes',lanespec(2));
 barrier(scenario,mainRoad);
 
@@ -73,7 +73,7 @@ traffic3 = actor(scenario, ...
     'Length', 0.5, ...
     'Width', 0.5, ...
     'Height', 3, ...
-    'Position', [500 20 0], ...
+    'Position', [500 40 0], ...
     'Mesh', driving.scenario.jerseyBarrierMesh, ...
     'PlotColor', [0 255 0] / 255, ...
     'Name', 'User defined');
@@ -139,6 +139,8 @@ sensors{6} = drivingRadarDataGenerator('SensorIndex', 6, 'MountingAngles', [-60 
  sensors{7} = visionDetectionGenerator('SensorIndex', 7, 'FalsePositivesPerImage', 0.1, ...
      'SensorLocation', [0.75*egoCar.Wheelbase 0], 'Height', 1.1, 'DetectorOutput','Objects only', ...
      'Pitch',1.0);
+ 
+
 
 
 % Rear-facing camera located at rear windshield.
@@ -271,9 +273,9 @@ while advance(scenario) && ishghandle(BEP.Parent)
                               track_speed_change = true;
                           end
                       elseif state == "yellow"
-                          if distance < 15  
+                          if distance < 10
                               desiredSpeed = 45;
-                          elseif distance < 30
+                          else
                               desiredSpeed = 10;
                           end
                       elseif state == "green"
@@ -281,11 +283,13 @@ while advance(scenario) && ishghandle(BEP.Parent)
                       end
  
                       if round(desiredSpeed) ~= round(speedEgoCar)
-                          disp("Distance to Light: " + distance);
-                          fprintf("Previous Velocity: [%d %d %d]\n", round(egoCar.Velocity));
+                          disp("Distance to Light (m): " + round(distance));
+                          disp("Traffic Signal State: " + state);
+                          fprintf("Previous Velocity (m/s): [%d %d %d]\n", round(egoCar.Velocity));
                           % Define positins array and current position
                             current_position = [egoCar.Position(1) egoCar.Position(2)];
-                            disp(points);
+
+                            fprintf("Current Position: [%d %d]\n", round(current_position));
                             % Find index of closest point in positions
                             [~, index] = pdist2(points, current_position, 'euclidean', 'Smallest', 1);
                             
@@ -293,8 +297,8 @@ while advance(scenario) && ishghandle(BEP.Parent)
                             subset_positions = points(index + 1:end, :);
                             
                             % Concatenate current position at beginning of subset_positions
-                            updated_positions = [current_position; (subset_positions)];
-                            disp(updated_positions);
+                            updated_positions = [current_position + [0 1.8]; subset_positions];
+
                           track_speed_change = true;
                           newVelocity = desiredSpeed * [cos(theta), sin(theta), 0];
                           egoCar.Velocity = desiredSpeed;
@@ -302,7 +306,7 @@ while advance(scenario) && ishghandle(BEP.Parent)
 %                           new_points = trajectoryGeneratorFrenet(points);
                           trajectory(egoCar, updated_positions, desiredSpeed);
                           pause(0.01);
-                          fprintf("New Velocity: [%d %d %d]\n", round(egoCar.Velocity));
+                          fprintf("New Velocity (m/s): [%d %d %d]\n", round(egoCar.Velocity));
 
                       end
                       
