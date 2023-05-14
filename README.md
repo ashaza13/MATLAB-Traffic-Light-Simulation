@@ -1,1 +1,2 @@
-# Project1
+# MATLAB Traffic Light Simulation
+This scenario simulates an autonomous vehicle on a long curved road. The scenario makes use of 3 different traffic lights that change color. The autonomous vehicle is able to detect the change in color of the traffic light and react accordingly. This scenario is designed with MATLAB's Driving Scenario Designer tool. This simulation is designed by myself and another member on the Connected Automated Vehicles Subteam within the Hokie Electric Vehicle Team. We are actively researching on how to improve the efficiency of the Cadillac Lyriq, while designing systems to equip the vehicle autonomy level 3. 
